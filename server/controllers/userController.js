@@ -154,18 +154,23 @@ export const forgotPassword = async (req, res) => {
 // Controller to reset the password
 export const resetPassword = async (req, res) => {
   const { token } = req.params;
-  const { password } = req.body;
+  const { newPassword } = req.body;
 
   try {
+    if (!newPassword) {
+      return res.status(400).json({ message: "New password is required" });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decoded.id;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     await User.findByIdAndUpdate(userId, { password: hashedPassword });
 
     res.status(200).json({ message: "Password reset successfully" });
   } catch (error) {
-    console.error("Reset password error:", error);
-    res.status(400).json({ message: "Invalid or expired token" });
+    console.error("Reset password error:", error.message);
+    res.status(500).json({ message: "Server error: " + error.message });
   }
 };
+
