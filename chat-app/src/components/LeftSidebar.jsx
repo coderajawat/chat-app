@@ -17,6 +17,7 @@ const LeftSidebar = () => {
   const { logout, onlineUsers } = useContext(AuthContext);
 
   const [input, setInput] = useState();
+  const [showMenu, setShowMenu] = useState(false);
 
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ const LeftSidebar = () => {
 
   return (
     <div
-      className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${
+      className={`bg-[#8185B2]/10 h-full p-5 rounded-l-xl overflow-y-scroll text-white ${
         selectedUser ? "max-md:hidden" : ""
       }`}
     >
@@ -44,19 +45,22 @@ const LeftSidebar = () => {
               src={assets.menu_icon}
               alt="Menu"
               className="max-h-5 cursor-pointer"
+              onClick={() => setShowMenu((prev) => !prev)}
             />
-            <div className="absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block">
-              <p
-                onClick={() => navigate("/profile")}
-                className="cursor-pointer text-sm"
-              >
-                Edit Profile
-              </p>
-              <hr className="my-2 border-t border-gray-500" />
-              <p onClick={() => logout()} className="cursor-pointer text-sm">
-                Logout
-              </p>
-            </div>
+            {showMenu && (
+              <div className={`absolute top-full right-0 z-20 w-32 p-5 rounded-md bg-[#282142] border border-gray-600 text-gray-100 ${showMenu ? "block" : "hidden"} group-hover:block`}>
+                <p
+                  onClick={() => {navigate("/profile"); setShowMenu(false);}}
+                  className="cursor-pointer text-sm"
+                >
+                  Edit Profile
+                </p>
+                <hr className="my-2 border-t border-gray-500" />
+                <p onClick={() => {logout(); setShowMenu(false);}} className="cursor-pointer text-sm">
+                  Logout
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
